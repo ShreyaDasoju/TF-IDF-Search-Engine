@@ -1,14 +1,11 @@
-Name: Shreya Dasoju
-Student Number: 501166279
-
-This system supports index construction (from assignment 1), vector-based document retrieval, and performance evaluation using IR metrics (MAP and R-Precision)
+This system supports index construction, vector-based document retrieval, and performance evaluation using IR metrics (MAP and R-Precision)
 
 Programs are written in the following:
-    - cacm_parser.py (reused from Assignment 1)
+    - cacm_parser.py 
     - search.py
     - searchUI.py
     - eval.py
-    - test.py (ignore this one - it's from assignment 1, and not used for assignment 2)
+    - test.py 
 
 ----------------------------------------------------------------------------------
 Instructions to run the programs:
@@ -17,7 +14,7 @@ cacm_parser.py (building the index):
     - python cacm_parser.py --cacm cacm.all --stopwords stopwords.txt --no-stop --no-stem (no stopwords, no stemming)
     - python cacm_parser.py --cacm cacm.all --stopwords stopwords.txt (stopwords and stemming enabled)
 
-    - this program generates dictionar.json, postings.json, idf.json, and doc_vectors.json
+    - this program generates dictionary.json, postings.json, idf.json, and doc_vectors.json
 
 searchUI.py:
     - python searchUI.py
@@ -53,5 +50,3 @@ Average R-Precision: 0.0785
 
 Note: 
 Before running anything, run 'pip install nltk numpy'
-
-** noticed that after implementing the top-k method to create a candidate set of N=100, the overall metric values went down, but individual document similarity scores went up. **
