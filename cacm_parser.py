@@ -14,7 +14,7 @@ def parse_cacm_all(path):
 
     current_docId = None 
     current_field = None 
-    buff = {"T": [], "W": [], "A": [], "B": [], "X":[]} #(only interested in: .T, .W, .A, .B)
+    buff = {"T": [], "W": [], "A": [], "B": [], "X":[]} 
 
     for line in lines:
         line = line.rstrip('\n')
@@ -122,6 +122,29 @@ def index_builder(documents, stopwords=set(), stop=True, stem=False, stemmer=Non
         postings.sort(key=lambda x: x["doc_id"]) #lambda function to sort the postings by document ID
 
     return dictionary, inverted
+
+
+# build the citation graph:
+def build_citation_graph(docs):
+    graph = {}
+    doc_ids = set(docs.key())
+
+    for doc_id, data in docs.items():
+        outlinks = []
+        for c in data.get("citations", []):
+            try:
+                c_id = int(c)
+                if c_id in doc_ids:
+                    outlinks.append(c_id)
+            except:
+                continue
+        graph[doc_id] = outlinks
+    return graph
+
+
+# Computing PageRank
+def compute_pagerank(graph, damping_factor = 0.85, max_iter=100):
+    return
 
 
 # Main program
