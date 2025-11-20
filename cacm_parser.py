@@ -14,7 +14,7 @@ def parse_cacm_all(path):
 
     current_docId = None 
     current_field = None 
-    buff = {"T": [], "W": [], "A": [], "B": []} #(only interested in: .T, .W, .A, .B)
+    buff = {"T": [], "W": [], "A": [], "B": [], "X":[]} #(only interested in: .T, .W, .A, .B)
 
     for line in lines:
         line = line.rstrip('\n')
@@ -24,11 +24,11 @@ def parse_cacm_all(path):
                     "title": " ".join(buff["T"]).strip(),
                     "abstract": " ".join(buff["W"]).strip(),
                     "authors": " ".join(buff["A"]).strip(),
-                    "date": " ".join(buff["B"]).strip()
-
+                    "date": " ".join(buff["B"]).strip(),
+                    "citations": buff["X"]
                 }
 
-                buff = {"T": [], "W": [], "A": [], "B": []}
+                buff = {"T": [], "W": [], "A": [], "B": [], "X": []}
 
             current_docId = int(line[3:].strip()) 
             current_field = None
@@ -40,18 +40,28 @@ def parse_cacm_all(path):
             current_field = "A"
         elif line.startswith('.B'):
             current_field = "B" 
+        elif line.startswith('.X'):
+            current_field = "X"
         elif line.startswith('.'):
             current_field = None
         else:
             if current_docId is not None and current_field is not None:
-                buff[current_field].append(line.strip())
+                if current_field != "X":
+                    buff[current_field].append(line.strip())
+                else:
+                    parts = line.strip().split()
+                    if len(parts) ==3:
+                        _, mid, dest = parts
+                        if mid == "5":
+                            buff["X"].append(dest)
     
     if current_docId is not None:
         docs[current_docId] = {
             "title": " ".join(buff["T"]).strip(),
             "abstract": " ".join(buff["W"]).strip(),
             "authors": " ".join(buff["A"]).strip(),
-            "date": " ".join(buff["B"]).strip()
+            "date": " ".join(buff["B"]).strip(),
+            "citations": buff["X"]
         }
     
     return docs
