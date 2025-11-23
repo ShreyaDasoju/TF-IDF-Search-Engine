@@ -28,7 +28,7 @@ def normalize_vectors(vector):
 #Index Elimination is the Top-K approach chosen and is implemented here. The idf-threshold is 0.1 by default.
 #Subset of N=100 documents is now taken from the filtered documents, and then K=10 documents are returned from that subset, in ranked order
 #by cosine similarity score
-def search_query(query_text, doc_vectors, docs, idf, stopwords=set(), stemmer=None, idf_threshold=0.1, top_k=10, top_n=100):
+def search_query(query_text, doc_vectors, docs, idf, stopwords=set(), stemmer=None, idf_threshold=0.1, top_k=10, top_n=100, pagerank = None, w1=0.7, w2=0.3):
     tokens = tokenize(query_text)
     processed_terms = []
 
@@ -91,8 +91,18 @@ def search_query(query_text, doc_vectors, docs, idf, stopwords=set(), stemmer=No
             sum_score += query_vector[t] * vec.get(t, 0)
         scores[doc_id]= sum_score
 
+    # combining the score with pagerank now
+    final_scores = {}
+    for doc_id, cosine_score in scores.items():
+        page_rank = 0.0
+        if pagerank is not None:
+            page_rank = pagerank.get(str(doc_id), 0.0)
+        
+        combined_score = (w1 * cosine_score) + (w2 * page_rank)
+        final_scores[doc_id] = combined_score
+
     # only returning the top k documents in ranked order
-    sorted_docs = sorted(scores.items(), key=lambda x: x[1], reverse=True)
+    sorted_docs = sorted(final_scores.items(), key=lambda x: x[1], reverse=True)
     return sorted_docs[:top_k]
 
 #removed main program from here and moved to searchUI.py

@@ -127,15 +127,15 @@ def index_builder(documents, stopwords=set(), stop=True, stem=False, stemmer=Non
 # build the citation graph:
 def build_citation_graph(docs):
     graph = {}
-    doc_ids = set(docs.key())
+    doc_ids = set(docs.keys())
 
     for doc_id, data in docs.items():
         outlinks = []
         for c in data.get("citations", []):
             try:
-                c_id = int(c)
-                if c_id in doc_ids:
-                    outlinks.append(c_id)
+                dest = int(c)
+                if dest in doc_ids:
+                    outlinks.append(dest)
             except:
                 continue
         graph[doc_id] = outlinks
@@ -143,8 +143,32 @@ def build_citation_graph(docs):
 
 
 # Computing PageRank
-def compute_pagerank(graph, damping_factor = 0.85, max_iter=100):
-    return
+def compute_pagerank(graph, damping_factor = 0.85, max_iter=50, tol=1e-6):
+    N = len(graph)
+    pr = {node: 1.0/N for node in graph}
+    outdeg = {node: len(graph[node]) for node in graph}
+
+    for _ in range(max_iter):
+        new_pr = {node: 0.0 for node in graph}
+
+        for node in graph: 
+            if outdeg[node] ==0:
+                for other in graph: 
+                    new_pr[other] += pr[node]/N
+            else:
+                share = pr[node]/outdeg[node]
+                for dest in graph[node]:
+                    new_pr[dest] +=share
+
+        for node in new_pr:
+            new_pr[node] = (1-damping_factor)*new_pr[node] + damping_factor/N
+        
+        diff = sum(abs(new_pr[n] - pr[n]) for n in graph)
+        if diff < tol:
+            break
+        pr = new_pr
+    
+    return pr
 
 
 # Main program
@@ -215,3 +239,12 @@ if __name__ == "__main__":
         json.dump(postings, f, indent=2, ensure_ascii=False)
 
     print("Index built and is saved to", args.outdir)
+
+    # Build citation graph and then compute PageRank
+    graph = build_citation_graph(docs)
+    pagerank_scores = compute_pagerank(graph)
+
+    # saving pagerank scores to a json file
+    with open(f"{args.outdir}/pagerank.json", "w", encoding="utf-8") as f:
+        json.dump(pagerank_scores, f, indent=2)
+    print("PageRank computed and saved.")
