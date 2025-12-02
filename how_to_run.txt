@@ -1,0 +1,151 @@
+Building index:
+    - run 'python cacm_parser.py --cacm cacm.all --stopwords stopwords.txt'
+    - output:
+        Parsed 3204 documents
+        Loaded 428 stopwords
+        Stemming enabled using Porter Stemmer
+        Index built and is saved to .
+    
+Computing PageRank Scores:
+    - run 'python build_pagerank.py --cacm cacm.all --out pagerank.json'
+    - output:
+        Loaded 3204 documents from cacm.all
+        Graph contains 3204 nodes
+        Computed PageRank scores.
+        Normalized PageRank scores.
+        Saving PageRank scores to pagerank.json
+        Done.
+
+Interactive Query Search + setting weights for calculation:
+    - run 'python searchUI.py --w1 0.7 --w2 0.3' --> can change the w1 and w2 values but make them add up to 1.0
+    - output:
+        Loaded PageRank scores.
+        ***** Welcome to the CACM Search Engine *****
+        Type a query below, or type <<ZZEND>> to quit.
+
+        Enter query: computer graphics
+
+        Top 10 Results for the Query: "computer graphics"
+        --------------------------------------------------
+        1. Doc ID: 1466 | Score: 0.6781
+        Title: Discussion Summary on Graphical Languages
+        Authors:
+
+        2. Doc ID: 490 | Score: 0.6273
+        Title: Programmed Methods for Printer Graphical Output
+        Authors: Garfinkel, D.
+
+        3. Doc ID: 1250 | Score: 0.6167
+        Title: Graphic Symbols for Problem Definition and Analysis-A Standards Working Paper
+        Authors:
+
+        4. Doc ID: 1767 | Score: 0.5441
+        Title: A General Purpose Graphic Language
+        Authors: Kulsrud, H. E.
+
+        5. Doc ID: 1467 | Score: 0.5119
+        Title: A Graphical ServiceSystem With Variable Syntax
+        Authors: Roberts, L. G.
+
+        6. Doc ID: 1201 | Score: 0.5076
+        Title: Generation of Permutations in Lexico-Graphical Order (Algorithm 202 [G6])
+        Authors: Elliott, R. W.
+
+        7. Doc ID: 2105 | Score: 0.5041
+        Title: An Interactive Computer System Using Graphical Flowchart Input
+        Authors: Robins, M. F. Beyer, J. D.
+
+        8. Doc ID: 3049 | Score: 0.4607
+        Title: A Simply Extended and Modified Batch Environment Graphical System (SEMBEGS)
+        Authors: Wendorf, J.W.
+
+        9. Doc ID: 2188 | Score: 0.4576
+        Title: An Approach to the Optimum Design of Computer Graphics Systems
+        Authors: Foley, J. D.
+
+        10. Doc ID: 2078 | Score: 0.4515
+        Title: Representations for Space Planning
+        Authors: Eastman, C. M.
+
+        --------------------------------------------------
+
+        Enter query: ZZEND
+        Exited Program.
+
+
+Running the evaluation program:
+    - run 'python eval.py --w1 0.5 --w2 0.5'
+    - output:
+        Loaded 65 queries and 52 relevance sets.
+        Evaluating with w1=0.5, w2=0.5
+
+        Query 1: AP = 0.2000, R-Precision = 0.2000
+        Query 2: AP = 0.0000, R-Precision = 0.0000
+        Query 3: AP = 0.0208, R-Precision = 0.0000
+        Query 4: AP = 0.1000, R-Precision = 0.1667
+        Query 5: AP = 0.0250, R-Precision = 0.1250
+        Query 6: AP = 0.0000, R-Precision = 0.0000
+        Query 7: AP = 0.1250, R-Precision = 0.1429
+        Query 8: AP = 0.0000, R-Precision = 0.0000
+        Query 9: AP = 0.1243, R-Precision = 0.3333
+        Query 10: AP = 0.2073, R-Precision = 0.2286
+        Query 11: AP = 0.0801, R-Precision = 0.1579
+        Query 12: AP = 0.4000, R-Precision = 0.4000
+        Query 13: AP = 0.0411, R-Precision = 0.1818
+        Query 14: AP = 0.0495, R-Precision = 0.1136
+        Query 15: AP = 0.0533, R-Precision = 0.2000
+        Query 16: AP = 0.0000, R-Precision = 0.0000
+        Query 17: AP = 0.0538, R-Precision = 0.1875
+        Query 18: AP = 0.0227, R-Precision = 0.0909
+        Query 19: AP = 0.0442, R-Precision = 0.1818
+        Query 20: AP = 0.0476, R-Precision = 0.0000
+        Query 21: AP = 0.0303, R-Precision = 0.0909
+        Query 22: AP = 0.3445, R-Precision = 0.3529
+        Query 23: AP = 0.0000, R-Precision = 0.0000
+        Query 24: AP = 0.1154, R-Precision = 0.1538
+        Query 25: AP = 0.0163, R-Precision = 0.0588
+        Query 26: AP = 0.1770, R-Precision = 0.2667
+        Query 27: AP = 0.0034, R-Precision = 0.0345
+        Query 28: AP = 0.2667, R-Precision = 0.2000
+        Query 29: AP = 0.2499, R-Precision = 0.3684
+        Query 30: AP = 0.0250, R-Precision = 0.0000
+        Query 31: AP = 0.0833, R-Precision = 0.0000
+        Query 32: AP = 0.6250, R-Precision = 0.3333
+        Query 33: AP = 0.0000, R-Precision = 0.0000
+        Query 34: AP = 0.0000, R-Precision = 0.0000
+        Query 35: AP = 0.0000, R-Precision = 0.0000
+        Query 36: AP = 0.0361, R-Precision = 0.1500
+        Query 37: AP = 0.0486, R-Precision = 0.1667
+        Query 38: AP = 0.0295, R-Precision = 0.1250
+        Query 39: AP = 0.0167, R-Precision = 0.0833
+        Query 40: AP = 0.3500, R-Precision = 0.4000
+        Query 41: AP = 0.0000, R-Precision = 0.0000
+        Query 42: AP = 0.0000, R-Precision = 0.0000
+        Query 43: AP = 0.0061, R-Precision = 0.0244
+        Query 44: AP = 0.0686, R-Precision = 0.1176
+        Query 45: AP = 0.0684, R-Precision = 0.1538
+        Query 46: AP = 0.0000, R-Precision = 0.0000
+        Query 47: AP = 0.0000, R-Precision = 0.0000
+        Query 48: AP = 0.0093, R-Precision = 0.0833
+        Query 49: AP = 0.0179, R-Precision = 0.1250
+        Query 50: AP = 0.0000, R-Precision = 0.0000
+        Query 51: AP = 0.0000, R-Precision = 0.0000
+        Query 52: AP = 0.0000, R-Precision = 0.0000
+        Query 53: AP = 0.0000, R-Precision = 0.0000
+        Query 54: AP = 0.0000, R-Precision = 0.0000
+        Query 55: AP = 0.0000, R-Precision = 0.0000
+        Query 56: AP = 0.0000, R-Precision = 0.0000
+        Query 57: AP = 1.0000, R-Precision = 1.0000
+        Query 58: AP = 0.0139, R-Precision = 0.0667
+        Query 59: AP = 0.0371, R-Precision = 0.0930
+        Query 60: AP = 0.1373, R-Precision = 0.1852
+        Query 61: AP = 0.0484, R-Precision = 0.0645
+        Query 62: AP = 0.0000, R-Precision = 0.0000
+        Query 63: AP = 0.0139, R-Precision = 0.0833
+        Query 64: AP = 0.5000, R-Precision = 0.0000
+        Query 0: AP = 0.0000, R-Precision = 0.0000
+
+        ***Overall Evaluation***
+        Mean Average Precision (MAP): 0.0913
+        Average R-Precision: 0.1153
+        Evaluated 65 queries.
