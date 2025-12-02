@@ -1,6 +1,7 @@
 import re
 import numpy as np
 import json
+import argparse
 from search import search_query
 from cacm_parser import parse_cacm_all
 
@@ -68,13 +69,13 @@ def r_precision(retrieved, relevant):
     return count/r
     
 
-def evaluate_system(queries, qrels, doc_vectors, docs, idf, top_k=10, top_n=100):
+def evaluate_system(queries, qrels, doc_vectors, docs, idf, pagerank, w1, w2, stopwords, stemmer, top_k=10, top_n=100):
     avgp_values = []
     rprec_values = []
 
     for qid, text in queries.items():
         relevant = qrels.get(qid, set())
-        retrieved = [int(doc_id) for doc_id, _ in search_query(text, doc_vectors, docs, idf, top_k=top_k, top_n=top_n)]
+        retrieved = [int(doc_id) for doc_id, _ in search_query(text, doc_vectors, docs, idf, stopwords = stopwords, stemmer=stemmer, top_k=top_k, top_n=top_n, pagerank=pagerank, w1=w1, w2=w2)]
 
         avgp = average_precision(retrieved, relevant)
         rprec = r_precision(retrieved, relevant)
@@ -91,6 +92,16 @@ def evaluate_system(queries, qrels, doc_vectors, docs, idf, top_k=10, top_n=100)
 
 if __name__ == "__main__":
 
+    # Adding command line arguments:
+    parser = argparse.ArgumentParser(description="Evaluate CACM Search Engine with PageRank integration")
+    parser.add_argument("--w1", type=float, default=0.7, help="Weight for cosine similarity score (w1)")
+    parser.add_argument("--w2", type=float, default=0.3, help="Weight for PageRank score (w2)")
+    parser.add_argument("--topK", type=int, default=10)
+    parser.add_argument("--topN", type=int, default=100)
+    parser.add_argument("--no-stop", action="store_true", help="stopword removal disabled for query")
+    parser.add_argument("--no-stem", action="store_true", help="stemming disabled for query")
+    args = parser.parse_args()
+
     docs = parse_cacm_all("cacm.all")
 
     with open("doc_vectors.json", encoding="utf-8") as f:
@@ -98,8 +109,19 @@ if __name__ == "__main__":
     with open("idf.json", encoding="utf-8") as f:
         idf = json.load(f)
 
+    with open("pagerank.json", encoding="utf-8") as f:
+        pagerank = json.load(f)
+
     queries = parse_queries("query.text")
     qrels = parse_query_results("qrels.text")
 
+    from nltk.stem import PorterStemmer
+    from cacm_parser import load_stopwords
+    stopwords = load_stopwords("stopwords.txt") if not args.no_stop else set()
+    stemmer = None if args.no_stem else PorterStemmer()
+
     print(f"Loaded {len(queries)} queries and {len(qrels)} relevance sets.")
-    evaluate_system(queries, qrels, doc_vectors, docs, idf, top_k=10, top_n=100)
+    print(f"Evaluating with w1={args.w1}, w2={args.w2}\n")
+
+
+    evaluate_system(queries, qrels, doc_vectors, docs, idf, pagerank, args.w1, args.w2, stopwords, stemmer, top_k=args.topK, top_n = args.topN)
