@@ -7,11 +7,13 @@ from math import fabs
 def build_citation_graph(docs):
     # undirected link graph
     graph = {doc_id: set() for doc_id in docs.keys()}
+    doc_ids = set(docs.keys())
 
     for doc_id, data in docs.items():
         for (a,b) in data.get("X", []):
-            graph[a].add(b)
-            graph[b].add(a)
+            if a in doc_ids and b in doc_ids:
+                graph[a].add(b)
+                graph[b].add(a)
 
     return {doc: list(neighbors) for doc, neighbors in graph.items()}
 

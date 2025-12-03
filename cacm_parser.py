@@ -53,15 +53,20 @@ def parse_cacm_all(path):
                     if len(parts) ==3:
                         a, mid, b = parts
                         if mid == "5":
-                            buff["X"].append((int(a), int(b)))
-    
+                            try:
+                                a_id = int(a)
+                                b_id = int(b)
+                                buff["X"].append((a_id, b_id))
+                            except ValueError:
+                                pass
+
     if current_docId is not None:
         docs[current_docId] = {
             "title": " ".join(buff["T"]).strip(),
             "abstract": " ".join(buff["W"]).strip(),
             "authors": " ".join(buff["A"]).strip(),
             "date": " ".join(buff["B"]).strip(),
-            "citations": buff["X"]
+            "X": buff["X"]
         }
     
     return docs
