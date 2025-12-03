@@ -5,20 +5,15 @@ from math import fabs
 
 # Building the graph
 def build_citation_graph(docs):
-    graph = {}
-    doc_ids = set(docs.keys())
+    # undirected link graph
+    graph = {doc_id: set() for doc_id in docs.keys()}
 
     for doc_id, data in docs.items():
-        outlinks = []
-        for c in data.get("citations", []):
-            try:
-                dest = int(c)
-                if dest in doc_ids:
-                    outlinks.append(dest)
-            except:
-                continue
-        graph[doc_id] = outlinks
-    return graph
+        for (a,b) in data.get("X", []):
+            graph[a].add(b)
+            graph[b].add(a)
+
+    return {doc: list(neighbors) for doc, neighbors in graph.items()}
 
 
 # computing PageRank - using the power iteration method

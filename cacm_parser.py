@@ -51,9 +51,9 @@ def parse_cacm_all(path):
                 else:
                     parts = line.strip().split()
                     if len(parts) ==3:
-                        _, mid, dest = parts
+                        a, mid, b = parts
                         if mid == "5":
-                            buff["X"].append(dest)
+                            buff["X"].append((int(a), int(b)))
     
     if current_docId is not None:
         docs[current_docId] = {
